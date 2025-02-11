@@ -1,4 +1,5 @@
 from django.shortcuts import render
+
 def index(request):
     template_data = {}
     template_data["title"] = "Dashboard ECOZONA - 4 elementos Sabaneta"

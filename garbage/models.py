@@ -7,5 +7,4 @@ class Garbage(models.Model):
     luminaires_distance = models.FloatField()
     batteries_distance = models.FloatField()
     medicines_distance = models.FloatField()
-    oil_distance = models.FloatField()
-# Create your models here.
+    oils_distance = models.FloatField()
