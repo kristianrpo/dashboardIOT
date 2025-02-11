@@ -17,7 +17,7 @@ async function fetchLatestGarbage() {
         document.getElementById("occupancy-rate-luminaires").innerHTML = occupancyRateLuminaires.toFixed(2) + "%";
         document.getElementById("occupancy-rate-batteries").innerHTML = occupancyRateBatteries.toFixed(2) + "%";
         document.getElementById("occupancy-rate-medicines").innerHTML = occupancyRateMedicines.toFixed(2) + "%";
-        document.getElementById("occupancy-rate-oil").innerHTML = occupancyRateOil.toFixed(2) + "%";
+        document.getElementById("occupancy-rate-oils").innerHTML = occupancyRateOil.toFixed(2) + "%";
 
         if (occupancyRateRAAE <= 25 ) {
             document.getElementById(`fill-raae`).style.backgroundColor = `red`;
