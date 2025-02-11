@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center">
+    <div class="row justify-content-center w-100">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title h-25 my-3">RAAE</h5>
+                    <div class="d-flex justify-content-center">
+                        <div class="trash-container">
+                            <i class="fa-solid fa-trash fa-6x trash-icon"></i>
+                        </div>
+                        <div class = "bar-container mx-1">
+                            <div class="fill" id="fill-raae"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <span>Espacio disponible <p id="occupancy-rate-raae" class="mt-2">Cargando...</p></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title h-25 my-3">TAPAS DE PLÁSTICO</h5>
+                    <div class="d-flex justify-content-center">
+                        <div class="trash-container">
+                            <i class="fa-solid fa-trash fa-6x trash-icon"></i>
+                        </div>
+                        <div class = "bar-container mx-1">
+                            <div class="fill" id="fill-caps"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <span>Espacio disponible <p id="occupancy-rate-caps" class="mt-2">Cargando...</p>	</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title h-25 my-3">LUMINARIAS</h5>
+                    <div class="d-flex justify-content-center">
+                        <div class="trash-container">
+                            <i class="fa-solid fa-trash fa-6x trash-icon"></i>
+                        </div>
+                        <div class = "bar-container mx-1">
+                            <div class="fill" id="fill-luminaires"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <span> Espacio disponible <p id="occupancy-rate-luminaires" class="mt-2">Cargando...</p> </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title h-25 my-3">PILAS Y BATERÍAS</h5>
+                    <div class="d-flex justify-content-center">
+                        <div class="trash-container">
+                            <i class="fa-solid fa-trash fa-6x trash-icon"></i>
+                        </div>
+                        <div class = "bar-container mx-1">
+                            <div class="fill" id="fill-batteries"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <span> Espacio disponible <p id="occupancy-rate-batteries" class="mt-2">Cargando...</p> </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title h-25 my-3">MEDICAMENTOS</h5>
+                    <div class="d-flex justify-content-center">
+                        <div class="trash-container">
+                            <i class="fa-solid fa-trash fa-6x trash-icon"></i>
+                        </div>
+                        <div class = "bar-container mx-1">
+                            <div class="fill" id="fill-medicines"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <span> Espacio disponible <p id="occupancy-rate-medicines" class="mt-2">Cargando...</p> </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title my-3">ACEITES</h5>
+                    <div class="d-flex justify-content-center">
+                        <div class="trash-container">
+                            <i class="fa-solid fa-trash fa-6x trash-icon"></i>
+                        </div>
+                        <div class = "bar-container mx-1">
+                            <div class="fill" id="fill-oils"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <span> Espacio disponible <p id="occupancy-rate-oil" class="mt-2">Cargando...</p> </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src = "{% static 'js/fetch_garbage.js' %}"></script>
+{% endblock content %}
