@@ -13,6 +13,9 @@ def save_garbage_data(request):
 
 @api_view(['GET'])
 def get_garbage_data(request):
-    last_entry = Garbage.objects.latest('id')
-    serializer = GarbageSerializer(last_entry)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    if Garbage.objects.count() == 0:
+        return Response({"message": "No hay datos disponibles"}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        last_entry = Garbage.objects.latest('id')
+        serializer = GarbageSerializer(last_entry)
+        return Response(serializer.data, status=status.HTTP_200_OK)
