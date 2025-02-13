@@ -24,5 +24,8 @@
         {% endfor %}
     </div>
 </div>
+<script>
+    var totalHeightGarbage = "{{ template_data.total_height_garbage }}";
+</script>
 <script src = "{% static 'js/fetch_garbage.js' %}"></script>
 {% endblock content %}
