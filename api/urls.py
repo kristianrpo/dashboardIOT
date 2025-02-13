@@ -1,8 +1,7 @@
 from django.urls import path
-from .endpoints.garbage import save_garbage_data,get_garbage_data
+from .endpoints.garbage import save, get
 
 urlpatterns = [
-    path('save-garbage-data/', save_garbage_data, name="api.save"),
-    path('get-garbage-data/', get_garbage_data, name="api.get"),
-
+    path('garbage/save/', save, name="api.garbage.save"),
+    path('garbage/get/', get, name="api.garbage.get"),
 ]

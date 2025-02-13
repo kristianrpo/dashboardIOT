@@ -1,6 +1,6 @@
 async function fetchLatestGarbage(totalHeightGarbage) {
     try {
-        const response = await fetch('/api/get-garbage-data/');
+        const response = await fetch('/api/garbage/get/');
         const data = await response.json();
 
         occupancyRateRAAE = ((data.raae_distance) * 100)/totalHeightGarbage;
@@ -38,5 +38,5 @@ async function fetchLatestGarbage(totalHeightGarbage) {
     }
 }
 
-setInterval(fetchLatestGarbage(totalHeightGarbage), 5000);
+setInterval(() => fetchLatestGarbage(totalHeightGarbage), 5000);
 window.onload = fetchLatestGarbage(totalHeightGarbage);
