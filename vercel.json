@@ -2,22 +2,15 @@
     "version": 2,
     "builds": [
       {
-        "src": "server.py",
+        "src": "dashboardIOT/wsgi.py",
         "use": "@vercel/python"
       }
     ],
     "routes": [
       {
-        "src": "/static/(.*)",
-        "dest": "/staticfiles/$1"
-      },
-      {
         "src": "/(.*)",
-        "dest": "server.py"
+        "dest": "dashboardIOT/wsgi.py"
       }
-    ],
-    "env": {
-      "PYTHONUNBUFFERED": "1"
-    }
+    ]
   }
   
