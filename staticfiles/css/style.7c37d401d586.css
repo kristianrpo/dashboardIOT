@@ -1,0 +1,28 @@
+.trash-container {
+    position: relative;
+    display: inline-block;
+    font-size: 20px;
+    color: gray;
+}
+.bar-container{
+    position: relative;
+    display: inline-block;
+    font-size: 20px;
+    width: 10px;
+    border-bottom: black 1px solid;
+}
+
+.trash-icon {
+    position: relative;
+    z-index: 1;
+}
+
+.fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+    z-index: 2;
+}
