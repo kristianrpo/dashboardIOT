@@ -51,10 +51,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dashboardIOT.wsgi.app'
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'defaultdb'),
+        'USER': os.getenv('DB_USER', 'avnadmin'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'AVNS_FodfJmg3pRbfMig_Sst'),
+        'HOST': os.getenv('DB_HOST', 'dashboarddb-dashboardproject.f.aivencloud.com'),
+        'PORT': os.getenv('DB_PORT', '28844'),
+        'OPTIONS': {
+            'sslmode': os.getenv('DB_SSLMODE', 'require'),
+        },
     }
 }
 
