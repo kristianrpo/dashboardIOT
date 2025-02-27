@@ -1,23 +1,29 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/garbage.css' %}">
+{% endblock style %}
+
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center">
+<h1 class="mb-4 text-6xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl text-center text-white title">ECO-ZONA 4 ELEMENTOS</h1>
+<div class="d-flex justify-content-center align-items-center general-trash-container">
     <div class="row justify-content-center w-100">
         {% for garbage in template_data.garbage_info%}
-        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 card-animation">
             <div class="card text-center">
                 <div class="card-body">
                     <h5 class="card-title h-25 my-3">{{ garbage.title }}</h5>
                     <div class="d-flex justify-content-center">
                         <div class="trash-container">
-                            <i class="fa-solid fa-trash fa-6x trash-icon"></i>
-                        </div>
-                        <div class = "bar-container mx-1">
-                            <div class="fill" id="fill-{{garbage.fill_name}}"></div>
+                            <svg width="120" height="120" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" stroke="lightgray" stroke-width="10" fill="none"/>
+                                <text x="50" y="55" font-size="30" text-anchor="middle">🗑️</text>
+                                <circle cx="50" cy="50" r="40" stroke="red" stroke-width="10" fill="none" stroke-dasharray="251.2" stroke-dashoffset="250" stroke-linecap="round" id ="fill-{{garbage.fill_name}}"/>
+                            </svg>
                         </div>
                     </div>
                     <br>
-                    <span>Espacio disponible <p id="occupancy-rate-{{ garbage.fill_name }}" class="mt-2">Cargando...</p></span>
+                    <b><span>Espacio disponible <p id="occupancy-rate-{{ garbage.fill_name }}" class="mt-2">Cargando...</p></span></b>
                 </div>
             </div>
         </div>
