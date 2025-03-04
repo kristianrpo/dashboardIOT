@@ -7,7 +7,10 @@ from garbage.models import Garbage
 @api_view(['POST'])
 def save(request):
     serializer = GarbageSerializer(data=request.data)
+
     if serializer.is_valid():
+        if Garbage.objects.count() > 0:
+            Garbage.objects.all().delete()
         serializer.save()
         return Response({"message": "Datos recibidos correctamente", "data": serializer.data}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
