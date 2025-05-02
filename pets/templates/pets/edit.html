@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container my-5 px-5">
+    <h1 class="text-dark fs-4 fw-bold mb-4">Manejo de porciones de comida</h1>
+    <div class="row g-4">
+        <div class="col-12 col-md-6">
+            <form action="">
+                <h2 class="text-dark fs-5 fw-bold mb-3">Selección de tipo dispensador</h2>
+                <div class="mb-3">
+                    <label for="machine-type" class="form-label">Selecciona el tipo de dispensador a modificar</label>
+                    <select id="machine-type" class="form-select form-select-lg" name="machine-type" required>
+                        <option value="dogs">Perros</option>
+                        <option value="catc">Gatos</option>
+                    </select>
+                </div>
+
+                <h2 class="text-dark fs-5 fw-bold mb-3">Selección de dispensador especifico</h2>
+                <div class="mb-3">
+                    <label for="machine-id" class="form-label">Escriba el identificador del dispensador a modificar</label>
+                    <input
+                        type="number"
+                        id="portion-size"
+                        class="form-control form-control-lg border-secondary bg-light"
+                        placeholder="Ejemplo: 1, 2, 3"
+                        value=""
+                        required
+                    />
+                </div>
+
+                <h2 class="text-dark fs-5 fw-bold mb-3">Selección de porciones</h2>
+                <div class="mb-3">
+                    <label for="portion-size" class="form-label">Tamaño de la porción (giros) que proveerá el dispensador</label>
+                    <input
+                        type="number"
+                        id="portion-size"
+                        class="form-control form-control-lg border-secondary bg-light"
+                        placeholder="Tamaño de la porción"
+                        value=""
+                        required
+                    />
+                </div>
+                <h2 class="text-dark fs-5 fw-bold mb-3">Alimentación Automática Cronograma</h2>
+                <div class="mb-3">
+                    <label for="schedule" class="form-label">Fecha inicio de alimentación automática</label>
+                    <input
+                        type="datetime-local"
+                        id="initial-schedule"
+                        class="form-control form-control-lg border-secondary bg-light"
+                        placeholder="Ejemplo: 08:00, 12:00, 18:00"
+                        name="initial-schedule"
+                        required
+                    />
+                </div>
+                <div class="mb-3">
+                    <label for="schedule" class="form-label">Fecha fin de alimentación automática</label>
+                    <input
+                        type="datetime-local"
+                        id="final-schedule"
+                        class="form-control form-control-lg border-secondary bg-light"
+                        placeholder="Ejemplo: 08:00, 12:00, 18:00"
+                        name="final-schedule"
+                        required
+                    />
+                </div>
+                <button type="submit" class="btn btn-dark w-100 py-2 mt-4 text-white fw-bold">
+                    Guardar configuración
+                </button>
+            </form>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <img src="{% static 'img/pets.jpg' %}" class="card-img-top" alt="Imagen de mascotas">
+                <div class="card-body">
+                    <h5 class="card-title">Información adicional</h5>
+                    <p class="card-text">Esta sección es definida para configurar cada una de las máquinas dispensadoras de comida de mascotas en el manejo de las porciones.</p>
+                    <p class="card-text">Tendrá que identificar la maquina dispensadora que desea modificar, y, posteriormente, establecer la cantidad de porciones y los minutos para proveer automaticamente.</p>
+                    <a href="{% url 'pets.index' %}" class="btn btn-primary">Ir al dashboard de comida</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
