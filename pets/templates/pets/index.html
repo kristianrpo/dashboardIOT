@@ -6,7 +6,7 @@
         <div class="mx-5">
             <p class="text-dark fs-6 fw-bold mb-3">Filtra por tipo de máquina</p>
             <form id="filter-form" method="get">
-                <select className="form-select" name="type" id="type" onchange="filterType()">
+                <select className="form-select" name="type" id="type" onchange="filter_by_id('filter-form')">
                     <option value="">Todos</option>
                     <option value="Perros" {% if request.GET.type == 'Perros' %} selected {% endif %}> Perros </option>
                     <option value="Gatos" {% if request.GET.type == 'Gatos' %} selected {% endif %}> Gatos </option>
@@ -30,7 +30,7 @@
         {% endif %}
         <img class="card-img-top " src="{% static 'img/food-machine.png' %}" alt="Card image cap">
         <div class="card-body">
-            <h5 class="card-title mb-3">Máquina de {{ machine.type }} - #{{ machine.number}}</h5>
+            <h5 class="card-title mb-3">Máquina de {{ machine.type }} - #{{ machine.id }}</h5>
             <dl class="row">
               <dt class="col-sm-6 fw-bold">Siguiente porción programada:</dt>
               <dd class="col-sm-6">{{ machine.next_refill }}</dd>
@@ -50,18 +50,21 @@
               <dt class="col-sm-6 fw-bold">Tamaño de la porción:</dt>
               <dd class="col-sm-6">{{ machine.portion_size }} giros</dd>
             </dl>
-          
-            <a href="#" class="btn btn-primary mt-3">Dar una porción</a>
+            <form class="dispense-form" data-endpoint="{% url 'api.pets.dispense' %}" data-id="{{ machine.id }}">
+                <input type="number" id="id" name="id" value="{{ machine.number }}" hidden>
+                <button type="submit" class="btn btn-primary mt-3"  {% if machine.no_food %} disabled {% endif %}>
+                    Dar una porción
+                </button>
+            </form>
           </div>
     </div>
     {% endfor %}
 </div>
 
-<script>
-    function filterType() {
-        document.getElementById('filter-form').submit();
-    }
-</script>
+<script src="{% static 'js/filter_function.js' %}"></script>
+
+<script src="{% static 'js/request_dispense.js' %}"></script>
+
 
 
 {% endblock content %}

@@ -5,13 +5,13 @@
     <h1 class="text-dark fs-4 fw-bold mb-4">Manejo de porciones de comida</h1>
     <div class="row g-4">
         <div class="col-12 col-md-6">
-            <form action="">
+            <form id="update-form" data-endpoint="{% url 'api.pets.update' %}">
                 <h2 class="text-dark fs-5 fw-bold mb-3">Selección de tipo dispensador</h2>
                 <div class="mb-3">
                     <label for="machine-type" class="form-label">Selecciona el tipo de dispensador a modificar</label>
                     <select id="machine-type" class="form-select form-select-lg" name="machine-type" required>
-                        <option value="dogs">Perros</option>
-                        <option value="catc">Gatos</option>
+                        <option value="Perros">Perros</option>
+                        <option value="Gatos">Gatos</option>
                     </select>
                 </div>
 
@@ -20,7 +20,7 @@
                     <label for="machine-id" class="form-label">Escriba el identificador del dispensador a modificar</label>
                     <input
                         type="number"
-                        id="portion-size"
+                        id="machine-id"
                         class="form-control form-control-lg border-secondary bg-light"
                         placeholder="Ejemplo: 1, 2, 3"
                         value=""
@@ -81,4 +81,7 @@
         </div>
     </div>
 </div>
+
+
+<script src="{% static 'js/request_update.js' %}"></script>
 {% endblock content %}
