@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container my-5 px-5">
+    <div class="d-flex align-items-center flex-wrap justify-content-md-start justify-content-center">
+        <div class="mx-5">
+            <p class="text-dark fs-6 fw-bold mb-3">Filtra por tipo de máquina</p>
+            <form id="filter-form" method="get">
+                <select className="form-select" name="type" id="type" onchange="filterType()">
+                    <option value="">Todos</option>
+                    <option value="Perros" {% if request.GET.type == 'Perros' %} selected {% endif %}> Perros </option>
+                    <option value="Gatos" {% if request.GET.type == 'Gatos' %} selected {% endif %}> Gatos </option>
+                </select>
+            </form>
+        </div>
+        <a class="btn btn-secondary mt-3 mt-md-0" href="{% url 'pets.edit' %}"> Ir a la página de configuración</a>
+    </div>
+</div>
+<div class="container my-5 px-5 d-flex align-items-center flex-wrap justify-content-center">
+    {% for machine in template_data.machines %}
+    <div class="card col-md-4 col-lg-3 mb-4 mx-2 my-2 {% if machine.no_food %} border border-3 border-danger {% else %}  border border-3 border-success {% endif %}" style="width: 22rem;">
+        {% if machine.no_food %}
+        <div class="card-header text-center bg-danger text-white">
+            Sin comida
+        </div>
+        {% else %}
+        <div class="card-header text-center bg-success text-white">
+            Con comida
+        </div>
+        {% endif %}
+        <img class="card-img-top " src="{% static 'img/food-machine.png' %}" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Máquina de {{ machine.type }} - #{{ machine.number}}</h5>
+            <dl class="row">
+              <dt class="col-sm-6 fw-bold">Siguiente porción programada:</dt>
+              <dd class="col-sm-6">{{ machine.next_refill }}</dd>
+          
+              <dt class="col-sm-6 fw-bold">Última porción dada:</dt>
+              <dd class="col-sm-6">{{ machine.last_refill }}</dd>
+          
+              <dt class="col-sm-6 fw-bold">Inicio de programación para cómida automática:</dt>
+              <dd class="col-sm-6">{{ machine.automatic_start_date }}</dd>
+          
+              <dt class="col-sm-6 fw-bold">Fin de programación para cómida automática:</dt>
+              <dd class="col-sm-6">{{ machine.automatic_end_date }}</dd>
+          
+              <dt class="col-sm-6 fw-bold">Contador de porciones dadas:</dt>
+              <dd class="col-sm-6">{{ machine.dispense_count }}</dd>
+          
+              <dt class="col-sm-6 fw-bold">Tamaño de la porción:</dt>
+              <dd class="col-sm-6">{{ machine.portion_size }} giros</dd>
+            </dl>
+          
+            <a href="#" class="btn btn-primary mt-3">Dar una porción</a>
+          </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    function filterType() {
+        document.getElementById('filter-form').submit();
+    }
+</script>
+
+
+{% endblock content %}
