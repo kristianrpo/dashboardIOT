@@ -32,6 +32,5 @@ def index(request):
 def edit(request):
     template_data = {}
     template_data["title"] = "Configuración de máquinas - 4 elementos Sabaneta"
-
     return render(request, "pets/edit.html", {"template_data": template_data})
     

@@ -3,18 +3,19 @@ from rest_framework.response import Response
 from rest_framework import status
 from decouple import config
 import requests
-from dashboardIOT.constants import ENDPOINTS
+from pets.models import PetMachine
+from api.serializers.pets import PetMachineSerializer
+from dashboardIOT.settings import MQTT_BROKER, MQTT_PORT, MQTT_USER, MQTT_PASSWORD
+import paho.mqtt.client as mqtt
+import json
+
 @api_view(['GET'])
 def get(request):
     try:
-        esp32_url = config('ESP32_URL', default = "")
-        endpoint = ENDPOINTS["pets"]["food-machines"]
-        
-        response = requests.get(esp32_url + endpoint)
-        response.raise_for_status()
-        machines = response.json()
+        machines = PetMachine.objects.all()
+        serializer = PetMachineSerializer(machines, many=True)
 
-        return Response(machines, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     except requests.RequestException as e:
         return Response({"message": f"No se pudo conectar con el ESP32: {e}", "is_success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
@@ -22,12 +23,29 @@ def get(request):
 @api_view(['get'])
 def dispense(request):
     try:
-        esp32_url = config('ESP32_URL', default = "")
-        endpoint = ENDPOINTS["pets"]["dispense"]
         params = {"id": request.GET.get("id", None)}
-        response = requests.get(esp32_url + endpoint, params=params)
-        response.raise_for_status()
-        return Response({"message": f"La máquina {params['id']} dispensó correctamente", "is_success": True}, status=status.HTTP_200_OK)
+        pet_machine = PetMachine.objects.filter(id=params["id"]).first()
+        pet_machine.dispense_count += 1
+        pet_machine.save()
+
+        MQTT_TOPIC = f"pets/dispense"
+        message = {"id": params["id"], "rotations": pet_machine.portion_size}
+        message_json = json.dumps(message)
+        client = mqtt.Client()
+        client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
+        client.connect(MQTT_BROKER, MQTT_PORT, 60)
+        client.publish(MQTT_TOPIC, message_json)
+        client.disconnect()
+
+        print(params)
+        print(MQTT_TOPIC)
+        print(message)
+        print(MQTT_BROKER)
+        print(MQTT_PORT)
+        print(MQTT_USER)
+        print(MQTT_PASSWORD)
+
+        return Response({"message": f"La máquina {params['id']} recibió la tarea correctamente", "is_success": True}, status=status.HTTP_200_OK)
     except requests.RequestException as e:
         response_message = ""
         return Response({"message": f"No se pudo conectar con el ESP32: {e}", "is_success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -36,9 +54,6 @@ def dispense(request):
 @api_view(['PATCH'])
 def update(request):
     try:
-        esp32_url = config('ESP32_URL', default="")
-        endpoint = ENDPOINTS["pets"]["update-machine"]
-
         payload = {
             "type": request.data.get("type"),
             "id": request.data.get("id"),
@@ -47,8 +62,12 @@ def update(request):
             "automatic_end_date": request.data.get("automatic_end_date"),
         }
 
-        response = requests.patch(esp32_url + endpoint, json=payload)
-        response.raise_for_status()
+        PetMachine.objects.filter(id=payload["id"]).update(
+            type=payload["type"],
+            portion_size=payload["portion_size"],
+            automatic_start_date=payload["automatic_start_date"],
+            automatic_end_date=payload["automatic_end_date"]
+        )
 
         return Response({
             "message": f"La máquina {payload['id']} fue actualizada correctamente",
