@@ -9,6 +9,14 @@ DEBUG = config('DEBUG', default = False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default = "localhost", cast = lambda v: [s.strip() for s in v.split(',')])
 
+
+MQTT_BROKER = "jaragua-01.lmq.cloudamqp.com"
+MQTT_PORT = 1883
+MQTT_USER = "kufvoati:kufvoati"
+MQTT_PASSWORD = "U80l2J0lRbj84BceoCF0lYVRdPe_a9rD"
+
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

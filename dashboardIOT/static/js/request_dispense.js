@@ -16,6 +16,9 @@ document.querySelectorAll('.dispense-form').forEach(form => {
                 const response = JSON.parse(data);
                 if (response.is_success) {
                     alert("✅"+ response.message);
+                    setTimeout(() => {
+                        window.location.href = window.location.href;
+                    }, 100);
                 } else {
                     alert("❌ Error: " + response.message);
                 }
