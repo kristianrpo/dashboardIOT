@@ -4,7 +4,7 @@ from rest_framework import status
 from decouple import config
 import requests
 from pets.models import PetMachine
-from api.serializers.pets import PetMachineSerializer
+from api.serializers.pets import PetMachineSerializer, ScheduledTaskSerializer, PetMachineDetailSerializer
 from dashboardIOT.settings import MQTT_BROKER, MQTT_PORT, MQTT_USER, MQTT_PASSWORD
 import paho.mqtt.client as mqtt
 import json
@@ -17,10 +17,22 @@ def get(request):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     except requests.RequestException as e:
-        return Response({"message": f"No se pudo conectar con el ESP32: {e}", "is_success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"message": f"Error al conectar con la base de datos: {e}", "is_success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['GET'])
+def get_by_id(request, machine_id):
+    try:
+        pet_machine = PetMachine.objects.filter(id=machine_id).first()
+        if not pet_machine:
+            return Response({"message": "Máquina no encontrada", "is_success": False}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PetMachineDetailSerializer(pet_machine)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except requests.RequestException as e:
+        return Response({"message": f"Error al conectar con la base de datos: {e}", "is_success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
-@api_view(['get'])
+@api_view(['GET'])
 def dispense(request):
     try:
         params = {"id": request.GET.get("id", None)}
@@ -37,17 +49,8 @@ def dispense(request):
         client.publish(MQTT_TOPIC, message_json)
         client.disconnect()
 
-        print(params)
-        print(MQTT_TOPIC)
-        print(message)
-        print(MQTT_BROKER)
-        print(MQTT_PORT)
-        print(MQTT_USER)
-        print(MQTT_PASSWORD)
-
         return Response({"message": f"La máquina {params['id']} recibió la tarea correctamente", "is_success": True}, status=status.HTTP_200_OK)
     except requests.RequestException as e:
-        response_message = ""
         return Response({"message": f"No se pudo conectar con el ESP32: {e}", "is_success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
@@ -55,18 +58,12 @@ def dispense(request):
 def update(request):
     try:
         payload = {
-            "type": request.data.get("type"),
             "id": request.data.get("id"),
-            "portion_size": request.data.get("portion_size"),
-            "automatic_start_date": request.data.get("automatic_start_date"),
-            "automatic_end_date": request.data.get("automatic_end_date"),
+            "portion_size": request.data.get("portion_size")
         }
 
         PetMachine.objects.filter(id=payload["id"]).update(
-            type=payload["type"],
             portion_size=payload["portion_size"],
-            automatic_start_date=payload["automatic_start_date"],
-            automatic_end_date=payload["automatic_end_date"]
         )
 
         return Response({
@@ -76,6 +73,56 @@ def update(request):
 
     except requests.RequestException as e:
         return Response({
-            "message": f"No se pudo conectar con el ESP32: {e}",
+            "message": f"Error al conectar con la base de datos: {e}",
             "is_success": False
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def add_schedule_task(request):
+    machine_id = request.data.get("machine_id")
+    try:
+        machine = PetMachine.objects.get(id=machine_id)
+    except PetMachine.DoesNotExist:
+        print(f"Máquina con ID {machine_id} no encontrada")
+        return Response(
+            {"message": "Máquina no encontrada"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    data = request.data.copy()
+    data["machine"] = machine.id
+
+    serializer = ScheduledTaskSerializer(data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(
+            {"message": "Tarea programada guardada correctamente", "task": serializer.data},
+            status=status.HTTP_201_CREATED
+        )
+    else:
+        return Response(
+            {"message": "Error de validación", "errors": serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+@api_view(['GET'])
+def get_scheduled_tasks(request):
+    try:
+        machine_id = request.GET.get("machine_id", None)
+        if not machine_id:
+            return Response({"message": "ID de máquina no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        tasks = PetMachine.objects.get(id=machine_id).scheduled_tasks.all()
+        if not tasks:
+            return Response({"message": "No hay tareas programadas para esta máquina"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ScheduledTaskSerializer(tasks, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except PetMachine.DoesNotExist:
+        return Response({"message": "Máquina no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(f"Error al obtener tareas programadas: {e}")
+        return Response({"message": "Error al obtener tareas programadas"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
