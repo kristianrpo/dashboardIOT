@@ -1,12 +1,12 @@
 from django.shortcuts import render
-from .utils import format_date
-from django.shortcuts import render
 from django.urls import reverse
-import requests
 from decouple import config
+from .forms import ScheduledTaskForm
+import requests
+
 def index(request):
     template_data = {}
-    template_data["title"] = "Dashboard de máquina de cómidas - 4 elementos Sabaneta"
+    template_data["title"] = "Dashboard de máquina de cómida para mascotas - 4 elementos Sabaneta"
 
     response = requests.get(config('APPLICATION_URL', default = "") + reverse("api.pets.get"),None)
     if response.status_code == 200:
@@ -15,22 +15,24 @@ def index(request):
         template_data["is_success"] = response.json().get("is_success", False)
         template_data["message"] = response.json().get("message", "No se pudo conectar con el ESP32")
 
-    for machine in machines:
-        machine["next_refill"] = format_date(machine["next_refill"])
-        machine["last_refill"] = format_date(machine["last_refill"])
-        machine["automatic_start_date"] = format_date(machine["automatic_start_date"])
-        machine["automatic_end_date"] = format_date(machine["automatic_end_date"])
-    
-    
-    type_filter = request.GET.get('type', None)
-    if type_filter:
-        machines = [machine for machine in machines if machine['type'] == type_filter]
-
     template_data["machines"] = machines
     return render(request, "pets/index.html", {"template_data": template_data})
 
-def edit(request):
+def edit(request, machine_id):
     template_data = {}
     template_data["title"] = "Configuración de máquinas - 4 elementos Sabaneta"
+
+    response = requests.get(config('APPLICATION_URL', default = "") + reverse("api.pets.get_by_id", args=[machine_id]), None)
+    if response.status_code == 200:
+        machine = response.json()
+    else:
+        template_data["is_success"] = response.json().get("is_success", False)
+        template_data["message"] = response.json().get("message", "No se pudo conectar con el ESP32")
+
+    template_data["machine"] = machine
+    template_data["tasks"] = machine.get("scheduled_tasks", [])
+
+    form = ScheduledTaskForm()
+    template_data["form"] = form
+
     return render(request, "pets/edit.html", {"template_data": template_data})
-    
