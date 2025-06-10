@@ -1,87 +1,143 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load widget_tweaks %}
+{% load custom_filters %}
 {% block content %}
-<div class="container my-5 px-5">
-    <h1 class="text-dark fs-4 fw-bold mb-4">Manejo de porciones de comida</h1>
-    <div class="row g-4">
-        <div class="col-12 col-md-6">
-            <form id="update-form" data-endpoint="{% url 'api.pets.update' %}">
-                <h2 class="text-dark fs-5 fw-bold mb-3">Selección de tipo dispensador</h2>
-                <div class="mb-3">
-                    <label for="machine-type" class="form-label">Selecciona el tipo de dispensador a modificar</label>
-                    <select id="machine-type" class="form-select form-select-lg" name="machine-type" required>
-                        <option value="Perros">Perros</option>
-                        <option value="Gatos">Gatos</option>
-                    </select>
-                </div>
-
-                <h2 class="text-dark fs-5 fw-bold mb-3">Selección de dispensador especifico</h2>
-                <div class="mb-3">
-                    <label for="machine-id" class="form-label">Escriba el identificador del dispensador a modificar</label>
-                    <input
-                        type="number"
-                        id="machine-id"
-                        class="form-control form-control-lg border-secondary bg-light"
-                        placeholder="Ejemplo: 1, 2, 3"
-                        value=""
-                        required
-                    />
-                </div>
-
-                <h2 class="text-dark fs-5 fw-bold mb-3">Selección de porciones</h2>
-                <div class="mb-3">
-                    <label for="portion-size" class="form-label">Tamaño de la porción (giros) que proveerá el dispensador</label>
-                    <input
-                        type="number"
-                        id="portion-size"
-                        class="form-control form-control-lg border-secondary bg-light"
-                        placeholder="Tamaño de la porción"
-                        value=""
-                        required
-                    />
-                </div>
-                <h2 class="text-dark fs-5 fw-bold mb-3">Alimentación Automática Cronograma</h2>
-                <div class="mb-3">
-                    <label for="schedule" class="form-label">Fecha inicio de alimentación automática</label>
-                    <input
-                        type="datetime-local"
-                        id="initial-schedule"
-                        class="form-control form-control-lg border-secondary bg-light"
-                        placeholder="Ejemplo: 08:00, 12:00, 18:00"
-                        name="initial-schedule"
-                        required
-                    />
-                </div>
-                <div class="mb-3">
-                    <label for="schedule" class="form-label">Fecha fin de alimentación automática</label>
-                    <input
-                        type="datetime-local"
-                        id="final-schedule"
-                        class="form-control form-control-lg border-secondary bg-light"
-                        placeholder="Ejemplo: 08:00, 12:00, 18:00"
-                        name="final-schedule"
-                        required
-                    />
-                </div>
-                <button type="submit" class="btn btn-dark w-100 py-2 mt-4 text-white fw-bold">
-                    Guardar configuración
-                </button>
-            </form>
+<div class="container my-5">
+  <h1 class="text-dark fs-4 fw-bold mb-4">Manejo de porciones de comida</h1>
+  <div class="row g-4">
+    <div class="col-12 col-md-6">
+      <form id="update-form" data-endpoint="{% url 'api.pets.update' %}">
+        <h2 class="text-dark fs-5 fw-bold mb-3">Selección de dispensador especifico</h2>
+        <div class="mb-3">
+          <label for="machine-id" class="form-label">Escriba el identificador del dispensador a modificar</label>
+          <input
+            type="number"
+            id="machine-id"
+            class="form-control form-control-lg border-secondary bg-light"
+            placeholder="Ejemplo: 1, 2, 3"
+            value="{{ template_data.machine.id }}"
+            disabled
+          />
         </div>
-        <div class="col-12 col-md-6">
-            <div class="card">
-                <img src="{% static 'img/pets.jpg' %}" class="card-img-top" alt="Imagen de mascotas">
-                <div class="card-body">
-                    <h5 class="card-title">Información adicional</h5>
-                    <p class="card-text">Esta sección es definida para configurar cada una de las máquinas dispensadoras de comida de mascotas en el manejo de las porciones.</p>
-                    <p class="card-text">Tendrá que identificar la maquina dispensadora que desea modificar, y, posteriormente, establecer la cantidad de porciones y los minutos para proveer automaticamente.</p>
-                    <a href="{% url 'pets.index' %}" class="btn btn-primary">Ir al dashboard de comida</a>
+        <h2 class="text-dark fs-5 fw-bold mb-3">Selección de porciones</h2>
+        <div class="mb-3">
+          <label for="portion-size" class="form-label">Tamaño de la porción (giros) que proveerá el dispensador</label>
+          <input
+            type="number"
+            id="portion-size"
+            class="form-control form-control-lg border-secondary bg-light"
+            placeholder="Tamaño de la porción"
+            value="{{ template_data.machine.portion_size }}"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-dark w-100 py-2 mt-4 text-white fw-bold">
+          Guardar configuración de porciones
+        </button>
+      </form> 
+
+      <h2 class="text-dark fs-5 fw-bold mb-3 mt-4">Agregar tarea programada</h2>
+      <div class="accordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Formulario de programación de tareas
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <div id="task-form" data-add-schedule-endpoint="{% url 'api.pets.add_schedule' %}" data-get-tasks-endpoint="{% url 'api.pets.get_tasks' %}">
+                {% csrf_token %}
+                <div class="card shadow-sm border-0 mb-4">
+                  <div class="card-body bg-light rounded-3">
+                    <div class="mb-3" id="div_name">
+                      <label class="form-label text-dark fw-semibold">Nombre</label>
+                      {{ template_data.form.name|add_class:"form-control form-control-lg border-secondary bg-white" }}
+                    </div>
+                    
+                    <div class="mb-3" id="div_description">
+                      <label class="form-label text-dark fw-semibold">Descripción</label>
+                      {{ template_data.form.description|add_class:"form-control form-control border-secondary bg-white" }}
+                    </div>
+
+                    <div class="mb-3" id="div_schedule_type">
+                      <label class="form-label text-dark fw-semibold">Tipo de cronograma</label>
+                      {{ template_data.form.schedule_type|add_class:"form-select form-select-lg border-secondary bg-white" }}
+                    </div>
+
+                    <div class="mb-3" id="div_day_of_week">
+                      <label class="form-label text-dark fw-semibold">Dia de la semana</label>
+                      {{ template_data.form.day_of_week|add_class:"form-select form-select-lg border-secondary bg-white" }}
+                    </div>
+
+                    <div class="mb-3" id="div_hour">
+                      <label class="form-label text-dark fw-semibold">Hora (forma militar)</label>
+                      {{ template_data.form.hour|add_class:"form-control form-control-lg border-secondary bg-white" }}
+                    </div>
+
+                    <div class="mb-3" id="div_minute">
+                      <label class="form-label text-dark fw-semibold">Minuto (0-59)</label>
+                      {{ template_data.form.minute|add_class:"form-control form-control-lg border-secondary bg-white" }}
+                    </div>
+
+                    <div class="mb-3" id="div_date">
+                      <label class="form-label text-dark fw-semibold">Fecha</label>
+                      {{ template_data.form.date|add_class:"form-control form-control-lg border-secondary bg-white" }}
+                    </div>
+
+                    <button type="button" id="add-task-btn" class="btn btn-success w-100 fw-bold mt-3">
+                      ➕ Agregar tarea
+                    </button>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
+
+      <h2 class="text-dark fs-5 fw-bold mb-3 mt-4">Tareas programadas</h3>
+      <div id="tasks-list" class="mb-4">
+        {% for task in template_data.tasks %}
+        <div class="alert alert-secondary d-flex justify-content-between align-items-center mb-2 flex-wrap mt-2">
+          {% if task.schedule_type == 'Una vez' %}
+            <span class="badge bg-info">Una vez</span>
+            <span class="badge bg-danger mt-2 w-50 text-wrap">Ejecución: {{ task.date }} - {{ task|format_time }}</span>
+          {% elif task.schedule_type == 'Semanal' %}
+            <span class="badge bg-warning">Semanal</span>
+            <span class="badge bg-danger mt-2 w-50 text-wrap">Ejecución: Todos los {{ task.day_of_week }} - {{ task|format_time }}</span>
+          {% elif task.schedule_type == 'Diario' %}
+            <span class="badge bg-success">Diario</span>
+            <span class="badge bg-danger mt-2 w-50 text-wrap">Ejecución: Todos los Dias - {{ task|format_time }}</span>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
     </div>
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <img src="{% static 'img/pets.jpg' %}" class="card-img-top" alt="Imagen de mascotas">
+        <div class="card-body">
+          <h5 class="card-title">Información adicional</h5>
+          <p class="card-text">Esta sección es definida para configurar cada una de las máquinas dispensadoras de comida de mascotas en el manejo de las porciones.</p>
+          <p class="card-text">Tendrá que identificar la maquina dispensadora que desea modificar, y, posteriormente, establecer la cantidad de porciones y, si desea, configurar la provición automática.</p>
+
+          <h5 class="card-title">Guía de programación:</h5>
+          <ul>
+              <li>🕐 <strong>Una vez</strong>: Se ejecutará solo en la fecha indicada.</li>
+              <li>🔁 <strong>Semanal</strong>: Elige un día de la semana (ej. Lunes) y hora.</li>
+              <li>📅 <strong>Diario</strong>: Se ejecutará todos los días a la hora indicada.</li>
+          </ul>
+
+          <a href="{% url 'pets.index' %}" class="btn btn-primary">Ir al dashboard de comida</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-
 <script src="{% static 'js/request_update.js' %}"></script>
+<script src="{% static 'js/pet_machine_tasks.js' %}"></script>
+
 {% endblock content %}
