@@ -5,11 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", function (e) {
         e.preventDefault();
         const data = {
-            type: document.getElementById("machine-type").value,
             id: parseInt(document.getElementById("machine-id").value),
             portion_size: parseInt(document.getElementById("portion-size").value),
-            automatic_start_date: document.getElementById("initial-schedule").value,
-            automatic_end_date: document.getElementById("final-schedule").value,
         };
 
         fetch(endpoint, {
