@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from decouple import config
 import requests
-from pets.models import PetMachine
+from pets.models import PetMachine, ScheduledTask
 from api.serializers.pets import PetMachineSerializer, ScheduledTaskSerializer, PetMachineDetailSerializer
 from dashboardIOT.settings import MQTT_BROKER, MQTT_PORT, MQTT_USER, MQTT_PASSWORD
 import paho.mqtt.client as mqtt
@@ -115,7 +115,7 @@ def get_scheduled_tasks(request):
         
         tasks = PetMachine.objects.get(id=machine_id).scheduled_tasks.all()
         if not tasks:
-            return Response({"message": "No hay tareas programadas para esta máquina"}, status=status.HTTP_404_NOT_FOUND)
+            tasks = ScheduledTask.objects.none()
         
         serializer = ScheduledTaskSerializer(tasks, many=True)
 
@@ -126,3 +126,23 @@ def get_scheduled_tasks(request):
         print(f"Error al obtener tareas programadas: {e}")
         return Response({"message": "Error al obtener tareas programadas"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+@api_view(['DELETE'])
+def delete_schedule_task(request, task_id):
+    try:
+        task = ScheduledTask.objects.filter(id=task_id).first()
+        if not task:
+            return Response(
+                {"message": "Tarea programada no encontrada", "is_success": False},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        task.delete()
+        return Response(
+            {"message": "Tarea programada eliminada correctamente", "is_success": True},
+            status=status.HTTP_200_OK
+        )
+    except Exception as e:
+        return Response(
+            {"message": f"Error al eliminar la tarea programada: {e}", "is_success": False},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

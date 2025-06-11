@@ -7,7 +7,7 @@ from .endpoints.pets import dispense as dispense_pet_machine
 from .endpoints.pets import update as update_pet_machine
 from .endpoints.pets import add_schedule_task
 from .endpoints.pets import get_scheduled_tasks
-
+from .endpoints.pets import delete_schedule_task
 urlpatterns = [
     path('garbage/save/', save_garbage, name="api.garbage.save"),
     path('garbage/get/', get_garbage, name="api.garbage.get"),
@@ -17,4 +17,5 @@ urlpatterns = [
     path('pets/update/', update_pet_machine, name="api.pets.update"),
     path('pets/add_schedule/', add_schedule_task, name="api.pets.add_schedule"),
     path('pets/get_tasks/', get_scheduled_tasks, name="api.pets.get_tasks"),
+    path('pets/<int:task_id>/delete_task/', delete_schedule_task, name='api.pets.delete_task'),
 ]
