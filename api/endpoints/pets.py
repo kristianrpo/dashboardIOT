@@ -18,18 +18,16 @@ def get(request):
         machines = PetMachine.objects.all()
         
         for machine in machines:
+            if machine.next_refill:
+                next_refill = machine.next_refill
+                local_time = timezone.localtime(next_refill)
+                machine.next_refill = local_time.strftime("%d-%m-%Y %H:%M:%S")
             if machine.last_refill:
                 local_time = timezone.localtime(machine.last_refill)
                 machine.last_refill = local_time.strftime("%d-%m-%Y %H:%M:%S")
-            if machine.next_refill:
-                next_refill = machine.next_refill
-                if isinstance(next_refill, datetime):
-                    local_time = timezone.localtime(next_refill)
-                    machine.next_refill = local_time.strftime("%d-%m-%Y %H:%M:%S")
-                else:
-                    machine.next_refill = None
             else:
                 machine.last_refill = None
+                machine.next_refill = None
         serializer = PetMachineSerializer(machines, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
