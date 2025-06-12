@@ -35,5 +35,6 @@ class ScheduledTask(models.Model):
     date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     machine = models.ForeignKey(PetMachine, on_delete=models.CASCADE, related_name='scheduled_tasks')
+    last_executed_at = models.DateTimeField(null=True, blank=True)
 
 
