@@ -1,3 +1,4 @@
+APScheduler==3.11.0
 asgiref==3.8.1
 certifi==2025.1.31
 charset-normalizer==3.4.1
@@ -14,6 +15,7 @@ python-decouple==3.8
 requests==2.32.3
 sqlparse==0.5.3
 typing-extensions==4.12.2
+tzlocal==5.2
 urllib3==2.2.3
 vercel==0.2.1
 whitenoise==6.7.0
