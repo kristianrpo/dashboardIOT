@@ -3,6 +3,9 @@ from django.utils import timezone
 from pets.models import ScheduledTask
 import requests
 import logging
+from decouple import config
+from django.urls import reverse
+
 logger = logging.getLogger(__name__)
 
 def run_scheduled_tasks():
@@ -39,11 +42,7 @@ def run_scheduled_tasks():
         logger.info(f"Executing task: {task.name}")
 
         try:
-            response = requests.get(
-                f'http://localhost:8000/api/pets/dispense/?id={task.machine.id}',
-                timeout=10
-            )
-            
+            response = requests.get(config('APPLICATION_URL', default = "") + reverse("api.pets.dispense") + f"?id={task.machine.id}", None)
             if response.status_code == 200:
                 task.last_executed_at = now
                 task.save()
