@@ -8,11 +8,21 @@ from api.serializers.pets import PetMachineSerializer, ScheduledTaskSerializer, 
 from dashboardIOT.settings import MQTT_BROKER, MQTT_PORT, MQTT_USER, MQTT_PASSWORD
 import paho.mqtt.client as mqtt
 import json
+from django.utils import timezone
+from datetime import datetime
+import pytz
 
 @api_view(['GET'])
 def get(request):
     try:
         machines = PetMachine.objects.all()
+        
+        for machine in machines:
+            if machine.last_refill:
+                local_time = timezone.localtime(machine.last_refill)
+                machine.last_refill = local_time.strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                machine.last_refill = None
         serializer = PetMachineSerializer(machines, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -37,7 +47,10 @@ def dispense(request):
     try:
         params = {"id": request.GET.get("id", None)}
         pet_machine = PetMachine.objects.filter(id=params["id"]).first()
+        
         pet_machine.dispense_count += 1
+
+        pet_machine.last_refill = timezone.now()
         pet_machine.save()
 
         MQTT_TOPIC = f"pets/dispense"
