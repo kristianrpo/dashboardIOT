@@ -10,10 +10,10 @@ DEBUG = config('DEBUG', default = False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default = "localhost", cast = lambda v: [s.strip() for s in v.split(',')])
 
 
-MQTT_BROKER = "jaragua-01.lmq.cloudamqp.com"
-MQTT_PORT = 1883
-MQTT_USER = "kufvoati:kufvoati"
-MQTT_PASSWORD = "U80l2J0lRbj84BceoCF0lYVRdPe_a9rD"
+MQTT_BROKER = config('MQTT_BROKER', default = "localhost")
+MQTT_PORT = config('MQTT_PORT', default = 1883, cast=int)
+MQTT_USER = config('MQTT_USER', default = "user")
+MQTT_PASSWORD = config('MQTT_PASSWORD', default = "password")
 
 
 
