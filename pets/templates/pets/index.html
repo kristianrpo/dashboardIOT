@@ -18,10 +18,22 @@
             <h5 class="card-title mb-3">Máquina #{{ machine.id }}</h5>
             <dl class="row">
               <dt class="col-sm-6 fw-bold">Siguiente porción programada:</dt>
-              <dd class="col-sm-6">{{ machine.next_refill }}</dd>
+              <dd class="col-sm-6">
+                {% if machine.next_refill %}
+                  {{ machine.next_refill }}
+                {% else %}
+                  No existe una porción programada
+                {% endif %}
+              </dd>
           
               <dt class="col-sm-6 fw-bold">Última porción dada:</dt>
-              <dd class="col-sm-6">{{ machine.last_refill }}</dd>
+              <dd class="col-sm-6">
+                {% if machine.last_refill %}
+                  {{ machine.last_refill }}
+                {% else %}
+                  No existe una porción dada
+                {% endif %}
+              </dd>
           
               <dt class="col-sm-6 fw-bold">Contador de porciones dadas:</dt>
               <dd class="col-sm-6">{{ machine.dispense_count }}</dd>

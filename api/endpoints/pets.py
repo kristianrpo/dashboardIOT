@@ -135,8 +135,12 @@ def get_scheduled_tasks(request):
             return Response({"message": "ID de máquina no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
         
         tasks = PetMachine.objects.get(id=machine_id).scheduled_tasks.all()
+        machine = PetMachine.objects.get(id=machine_id)
         if not tasks:
             tasks = ScheduledTask.objects.none()
+            machine.next_refill = None
+            machine.save()
+            
         
         serializer = ScheduledTaskSerializer(tasks, many=True)
 

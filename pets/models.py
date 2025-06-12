@@ -21,8 +21,8 @@ SCHEDULE_TYPES = [
 
 class PetMachine(models.Model):
     id = models.AutoField(primary_key=True)
-    next_refill = models.DateTimeField()
-    last_refill = models.DateTimeField()
+    next_refill = models.DateTimeField(null=True, blank=True)
+    last_refill = models.DateTimeField(null=True, blank=True)
     dispense_count = models.IntegerField()
     portion_size = models.IntegerField()
     no_food = models.BooleanField(default=False)
