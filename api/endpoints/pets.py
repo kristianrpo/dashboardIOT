@@ -20,7 +20,14 @@ def get(request):
         for machine in machines:
             if machine.last_refill:
                 local_time = timezone.localtime(machine.last_refill)
-                machine.last_refill = local_time.strftime("%Y-%m-%d %H:%M:%S")
+                machine.last_refill = local_time.strftime("%d-%m-%Y %H:%M:%S")
+            if machine.next_refill:
+                next_refill = machine.next_refill
+                if isinstance(next_refill, datetime):
+                    local_time = timezone.localtime(next_refill)
+                    machine.next_refill = local_time.strftime("%d-%m-%Y %H:%M:%S")
+                else:
+                    machine.next_refill = None
             else:
                 machine.last_refill = None
         serializer = PetMachineSerializer(machines, many=True)
@@ -109,6 +116,7 @@ def add_schedule_task(request):
 
     if serializer.is_valid():
         serializer.save()
+        machine.update_next_refill()
         return Response(
             {"message": "Tarea programada guardada correctamente", "task": serializer.data},
             status=status.HTTP_201_CREATED
