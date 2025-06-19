@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="container my-5 d-flex align-items-center flex-wrap justify-content-center">
+<div class="container my-5 d-flex align-items-center flex-wrap justify-content-center justify-content-lg-between">  
     {% for machine in template_data.machines %}
     <div class="card col-md-4 col-lg-3 mb-4 mx-2 my-2 {% if machine.no_food %} border border-3 border-danger {% else %}  border border-3 border-success {% endif %}" style="width: 22rem;">
         {% if machine.no_food %}
@@ -51,6 +51,24 @@
           </div>
     </div>
     {% endfor %}
+
+    <div class="col-md-6">
+      <div class="card">
+        <img src="{% static 'img/instructions-BLE.png' %}" class="card-img-top" alt="Imagen de mascotas">
+        <div class="card-body">
+          <h5 class="card-title"><b>Información para conexión red WIFI</b></h5>
+          <ol>
+              <li>Descargue y abra la app nRF Connect (u otra que permita conexión BLE).</li>
+              <li>Busque el dispositivo ESP32-S3 WiFi Config y presione Connect.</li>
+              <li>Ubique las características BLE (UUIDs) para enviar datos (SSID y password).</li>
+              <li>Envíe el SSID y la contraseña sobre cada campo, en formato UTF-8, usando las características correspondientes.</li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
 </div>
 
 <script src="{% static 'js/request_dispense.js' %}"></script>
