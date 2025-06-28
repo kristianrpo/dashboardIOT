@@ -15,7 +15,7 @@ MQTT_PORT = config('MQTT_PORT', default = 1883, cast=int)
 MQTT_USER = config('MQTT_USER', default = "user")
 MQTT_PASSWORD = config('MQTT_PASSWORD', default = "password")
 
-
+APPLICATION_URL = config('APPLICATION_URL', default='')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,16 +63,14 @@ WSGI_APPLICATION = 'dashboardIOT.wsgi.app'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'defaultdb'),
-        'USER': os.getenv('DB_USER', 'avnadmin'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'AVNS_FodfJmg3pRbfMig_Sst'),
-        'HOST': os.getenv('DB_HOST', 'dashboarddb-dashboardproject.f.aivencloud.com'),
-        'PORT': os.getenv('DB_PORT', '28844'),
-        'OPTIONS': {
-            'sslmode': os.getenv('DB_SSLMODE', 'require'),
-        },
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME":     os.getenv("POSTGRES_DB",     "mydb"),
+        "USER":     os.getenv("POSTGRES_USER",   "myuser"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD","mypassword"),
+        "HOST":     os.getenv("DB_HOST", "db"),
+        "PORT":     os.getenv("DB_PORT", "5432"),
+        "OPTIONS":  {},
     }
 }
 

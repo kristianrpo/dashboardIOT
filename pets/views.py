@@ -7,7 +7,7 @@ import requests
 def index(request):
     template_data = {}
     template_data["title"] = "Dashboard de máquina de cómida para mascotas - 4 elementos Sabaneta"
-
+    
     response = requests.get(config('APPLICATION_URL', default = "") + reverse("api.pets.get"),None)
     if response.status_code == 200:
         machines = response.json()
