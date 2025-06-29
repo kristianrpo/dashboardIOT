@@ -61,6 +61,6 @@ def start():
         timezone='America/Bogota',
         daemon=True
     )
-    scheduler.add_job(run_scheduled_tasks, 'interval', minutes=1)
+    scheduler.add_job(run_scheduled_tasks, 'interval', minutes=1, next_run_time = timezone.now())
     scheduler.start()
     logger.info("Scheduler iniciado correctamente")
