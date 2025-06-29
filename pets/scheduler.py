@@ -57,15 +57,10 @@ def run_scheduled_tasks():
             logger.error(f"Error calling dispense: {str(e)}")
 
 def start():
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(
-        run_scheduled_tasks,
-        'interval',
-        minutes=1,
-        next_run_time=timezone.now()
+    scheduler = BackgroundScheduler(
+        timezone='America/Bogota',
+        daemon=True
     )
-    try:
-        scheduler.start()
-        logger.info("Scheduler started successfully")
-    except Exception as e:
-        logger.error(f"Scheduler error: {str(e)}")
+    scheduler.add_job(run_scheduled_tasks, 'interval', minutes=1)
+    scheduler.start()
+    logger.info("Scheduler iniciado correctamente")

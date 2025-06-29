@@ -4,6 +4,8 @@ services:
   web:
     build: .
     container_name: django_app_pets
+    environment:
+      - TZ=America/Bogota
     volumes:
       - static_volume:/app/static
     env_file: .env
@@ -11,12 +13,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    command: >
-      sh -c "
-        python manage.py migrate --noinput &&
-        python manage.py collectstatic --noinput &&
-        gunicorn dashboardIOT.wsgi:application --bind 0.0.0.0:8000 --workers 3 --threads 2 --worker-class gthread
-      "
     networks:
       - pets_network
     labels:
@@ -29,9 +25,10 @@ services:
     image: postgres:16
     container_name: postgres_db_pets
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      - TZ=America/Bogota
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -45,6 +42,8 @@ services:
   mosquitto:
     image: eclipse-mosquitto:2
     container_name: mqtt_pets
+    environment:
+      - TZ=America/Bogota
     restart: unless-stopped
     ports:
       - "1883:1883"

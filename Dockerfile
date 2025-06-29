@@ -18,5 +18,9 @@ RUN pip install --upgrade pip \
 COPY . .
 
 RUN python manage.py collectstatic --noinput
+RUN chmod +x /app/entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 EXPOSE 8000
+
+CMD ["gunicorn", "dashboardIOT.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--threads", "2", "--worker-class", "gthread"]
