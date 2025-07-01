@@ -158,8 +158,10 @@ def delete_schedule_task(request, task_id):
                 {"message": "Tarea programada no encontrada", "is_success": False},
                 status=status.HTTP_404_NOT_FOUND
             )
-
+        machine = task.machine
         task.delete()
+        machine.update_next_refill()
+        machine.save()
         return Response(
             {"message": "Tarea programada eliminada correctamente", "is_success": True},
             status=status.HTTP_200_OK
