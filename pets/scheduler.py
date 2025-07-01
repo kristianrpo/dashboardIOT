@@ -50,7 +50,7 @@ def run_scheduled_tasks():
                 elif task.schedule_type == 'Semanal':
                     task.machine.next_refill += timezone.timedelta(weeks=1)
                 elif task.schedule_type == 'Una vez':
-                    task.machine.next_refill = None
+                    task.machine.next_refill = task.machine.update_next_refill()
                 task.machine.save()
                 task.save()
                 logger.info(f"Task executed for machine {task.machine.id}")
