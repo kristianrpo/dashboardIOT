@@ -43,11 +43,11 @@
             </dl>
             <form class="dispense-form" data-endpoint="{% url 'api.pets.dispense' %}" data-id="{{ machine.id }}">
                 <input type="number" id="id" name="id" value="{{ machine.number }}" hidden>
-                <button type="submit" class="btn btn-primary mt-3"  {% if machine.no_food %} disabled {% endif %}>
+                <button type="submit" class="btn btn-primary mt-3 w-100"  {% if machine.no_food %} disabled {% endif %}>
                     Dar una porción
                 </button>
             </form>
-            <a href="{% url 'pets.edit' machine_id=machine.id %}" class="btn btn-secondary mt-3"> Editar máquina de mascotas </a>
+            <a href="{% url 'pets.edit' machine_id=machine.id %}" class="btn btn-secondary mt-3 w-100"> Editar máquina de mascotas </a>
           </div>
     </div>
     {% endfor %}

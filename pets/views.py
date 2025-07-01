@@ -13,7 +13,7 @@ def index(request):
         machines = response.json()
     else:
         template_data["is_success"] = response.json().get("is_success", False)
-        template_data["message"] = response.json().get("message", "No se pudo conectar con el ESP32")
+        template_data["message"] = response.json().get("message", "Existe un problema")
 
     template_data["machines"] = machines
     return render(request, "pets/index.html", {"template_data": template_data})
@@ -27,7 +27,7 @@ def edit(request, machine_id):
         machine = response.json()
     else:
         template_data["is_success"] = response.json().get("is_success", False)
-        template_data["message"] = response.json().get("message", "No se pudo conectar con el ESP32")
+        template_data["message"] = response.json().get("message", "Existe un problema")
 
     template_data["machine"] = machine
     template_data["tasks"] = machine.get("scheduled_tasks", [])
