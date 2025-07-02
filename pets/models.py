@@ -39,6 +39,9 @@ class PetMachine(models.Model):
         if next_executions:
             self.next_refill = min(next_executions)
             self.save()
+        else:
+            self.next_refill = None
+            self.save()
 
 class ScheduledTask(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)

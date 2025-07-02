@@ -45,19 +45,11 @@ def run_scheduled_tasks():
             response = requests.get(config('APPLICATION_URL', default = "") + reverse("api.pets.dispense") + f"?id={task.machine.id}", None)
             if response.status_code == 200:
                 task.last_executed_at = now
-                if task.schedule_type == 'Diario':
-                    task.machine.next_refill += timezone.timedelta(days=1)
-                elif task.schedule_type == 'Semanal':
-                    task.machine.next_refill += timezone.timedelta(weeks=1)
-                elif task.schedule_type == 'Una vez':
-                    task.machine.next_refill = task.machine.update_next_refill()
-                task.machine.save()
+                machine = task.machine
                 task.save()
+                machine.update_next_refill()
                 logger.info(f"Task executed for machine {task.machine.id}")
                 
-                if task.schedule_type == 'Una vez':
-                    task.delete()
-                    logger.info(f"One-time task deleted")
             else:
                 logger.error(f"Dispense error: {response.text}")
         except Exception as e:
