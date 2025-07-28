@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'garbage',
     'pets',
+    'orchards',
 ]
 
 MIDDLEWARE = [
@@ -65,11 +66,11 @@ WSGI_APPLICATION = 'dashboardIOT.wsgi.app'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME":     os.getenv("POSTGRES_DB",     "mydb"),
-        "USER":     os.getenv("POSTGRES_USER",   "myuser"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD","mypassword"),
-        "HOST":     os.getenv("DB_HOST", "db"),
-        "PORT":     os.getenv("DB_PORT", "5432"),
+        "NAME":     os.getenv("POSTGRES_DB",     "defaultdb"),
+        "USER":     os.getenv("POSTGRES_USER",   "avnadmin"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD","AVNS_FodfJmg3pRbfMig_Sst"),
+        "HOST":     os.getenv("DB_HOST", "dashboarddb-dashboardproject.f.aivencloud.com"),
+        "PORT":     os.getenv("DB_PORT", "28844"),
         "OPTIONS":  {},
     }
 }

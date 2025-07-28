@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/orchards.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock style %}
+{% block content %}
+<div class="container py-4">
+    {% for orchard in template_data.orchards %}
+    <div class="huerta-container">
+        <div class="huerta-header">
+            <h1 class="huerta-title">{{ orchard.name }}</h1>
+            <span class="status-badge {% if orchard.status %}status-active{% else %}status-inactive{% endif %}">
+                <i class="bi bi-droplet-fill"></i> 
+                {% if orchard.status %}Bomba Activada{% else %}Bomba Inactiva{% endif %}
+            </span>
+        </div>
+        
+        {% for statistic in orchard.statistics %}
+        <div class="row align-items-center mb-4">
+            <div class="col-lg-7">
+                <div class="statistic-card card-{{ statistic.state }}">
+                    <p class="statistic-label label-{{ statistic.state }}">{{ statistic.name }}</p>
+                    <p class="statistic-value">{{ statistic.value }}{{ statistic.unit }}</p>
+                    <p class="statistic-status status-{{ statistic.state }}">
+                        <i class="bi 
+                            {% if statistic.state == 'optimal' %}bi-check-circle-fill icon-optimal
+                            {% elif statistic.state == 'warning' %}bi-exclamation-triangle-fill icon-warning
+                            {% else %}bi-exclamation-octagon-fill icon-critical
+                            {% endif %}"></i> 
+                        {{ statistic.message_state }}
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="huerta-image-container">
+                    <img src="{% static 'img/'|add:statistic.image %}" class="huerta-image" alt="{{ statistic.name }}">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% for statistic in orchard.statistics %}
+          {% if statistic.weekly_values and statistic.name %}
+            <div class="soil-chart-card">
+              <p class="chart-title">{{ statistic.name }} (Últimos 7 días)</p>
+              <div class="chart-container">
+                {% if statistic.name == "Temperatura" %}
+                  <div class="y-axis-labels">
+                    <span>40°C</span>
+                    <span>30°C</span>
+                    <span>20°C</span>
+                    <span>10°C</span>
+                    <span>0°C</span>
+                  </div>
+                {% else %}
+                  <div class="y-axis-labels">
+                    <span>100%</span>
+                    <span>75%</span>
+                    <span>50%</span>
+                    <span>25%</span>
+                    <span>0%</span>
+                  </div>
+                {% endif %}
+                <div class="chart-content">
+                    <div class="chart-bars">
+                        <div class="chart-grid">
+                            <div class="chart-grid-line"></div>
+                            <div class="chart-grid-line"></div>
+                            <div class="chart-grid-line"></div>
+                            <div class="chart-grid-line"></div>
+                            <div class="chart-grid-line"></div>
+                        </div>
+                        {% if statistic.name != "Temperatura" %}
+                          {% for day, value in statistic.weekly_values.items %}
+                            <div class="chart-bar-group">
+                                <div class="chart-bar chart-bar-{{ statistic.state }}" 
+                                    style="height: {{ value }}%;">
+                                    {{ value }}%
+                                </div>
+                                <div class="chart-day">{{ day }}</div>
+                            </div>
+                          {% endfor %}
+                        {% else %}
+                          {% for day, value in statistic.weekly_heights.items %}
+                            <div class="chart-bar-group">
+                                <div class="chart-bar chart-bar-{{ statistic.state }}" 
+                                    style="height: {{ value.0 }}%;">
+                                    {{ value.1 }}C°
+                                </div>
+                                <div class="chart-day">{{ day }}</div>
+                            </div>
+                          {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+        <p class="update-time">Última actualización: {{ orchard.last_updated }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
