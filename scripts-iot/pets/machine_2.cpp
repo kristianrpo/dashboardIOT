@@ -332,7 +332,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
         isRotating = true;
         currentRotations = 0;
         lastRotationTime = millis();
-    } else if (id == 1 && isRotating) {
+    } else if (id == 2 && isRotating) {
         Serial.println("Ya se está realizando una rotación.");
     }
 }
